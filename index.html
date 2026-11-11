@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Portfolio</title>
+  <!-- 引入 jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      max-width: 450px;
+      width: 90%;
+      text-align: center;
+    }
+    h1 { color: #333; margin-bottom: 8px; font-size: 24px; }
+    p.bio { color: #666; font-size: 14px; margin-bottom: 20px; }
+    .btn {
+      background-color: #0366d6;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background-color: #024ea2; }
+    #quote-box {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #fafbfc;
+      border-left: 4px solid #0366d6;
+      border-radius: 4px;
+      text-align: left;
+      font-size: 13px;
+      color: #444;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1 id="user-name">個人首頁</h1>
+    <p class="bio">Web 基本原理與技術 Lab 2 成果展示</p>
+    <button id="fetch-btn" class="btn">獲取每日技術名言 (jQuery AJAX)</button>
+    
+    <div id="quote-box">
+      <p id="quote-content">載入中...</p>
+      <small id="quote-author" style="color: #888;"></small>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      // jQuery 事件監聽與 DOM 操作
+      $("#fetch-btn").click(function() {
+        $(this).text("資料獲取中...").prop("disabled", true);
+        
+        // jQuery AJAX 取得 JSON 資料
+        $.ajax({
+          url: "https://api.quotable.io/random",
+          method: "GET",
+          dataType: "json",
+          success: function(data) {
+            $("#quote-content").text('"' + data.content + '"');
+            $("#quote-author").text("— " + data.author);
+            $("#quote-box").fadeIn(400);
+          },
+          error: function() {
+            // 本地備用 JSON 模擬
+            const fallback = { content: "Stay hungry, stay foolish.", author: "Steve Jobs" };
+            $("#quote-content").text('"' + fallback.content + '"');
+            $("#quote-author").text("— " + fallback.author);
+            $("#quote-box").fadeIn(400);
+          },
+          complete: function() {
+            $("#fetch-btn").text("再換一句 (jQuery AJAX)").prop("disabled", false);
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
